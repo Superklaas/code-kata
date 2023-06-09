@@ -12,8 +12,6 @@ public class Main {
 
         List<int[]> coordinatesList = getCoordinatesListFromFile("coordinates2.txt");
 
-        printCoordinatesList(coordinatesList);
-
         List<String> foldInstructions = getFoldInstructionsFromFile("foldInstructions2.txt");
 
         for (String foldInstruction : foldInstructions) {
@@ -64,17 +62,17 @@ public class Main {
     }
 
     private static List<int[]> fold(List<int[]> originalCoordinatesList, String foldAxis, int foldLine) {
-        List<int[]> foldedCoordinatesList = new ArrayList<>();
+        List<int[]> coordinatesAfterFoldList = new ArrayList<>();
         if ("y".equals(foldAxis)) {
             for (int[] originalCoordinates : originalCoordinatesList) {
                 int coordinateX = originalCoordinates[0];
                 int coordinateY = originalCoordinates[1];
                 if (coordinateY < foldLine) {
-                    foldedCoordinatesList.add(originalCoordinates);
+                    coordinatesAfterFoldList.add(originalCoordinates);
                 } else {
                     int[] foldedCoordinates = {coordinateX, 2 * foldLine - coordinateY};
-                    if (foldedCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == foldedCoordinates[0] && coordinates[1] == foldedCoordinates[0])) {
-                        foldedCoordinatesList.add(foldedCoordinates);
+                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == foldedCoordinates[0] && coordinates[1] == foldedCoordinates[0])) {
+                        coordinatesAfterFoldList.add(foldedCoordinates);
                     }
                 }
             }
@@ -83,16 +81,18 @@ public class Main {
                 int coordinateX = oldCoordinates[0];
                 int coordinateY = oldCoordinates[1];
                 if (coordinateX < foldLine) {
-                    foldedCoordinatesList.add(oldCoordinates);
+                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
+                        coordinatesAfterFoldList.add(oldCoordinates);
+                    }
                 } else {
                     int[] newCoordinates = {2 * foldLine - coordinateX, coordinateY};
-                    if (foldedCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
-                        foldedCoordinatesList.add(newCoordinates);
+                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
+                        coordinatesAfterFoldList.add(newCoordinates);
                     }
                 }
             }
         }
-        return foldedCoordinatesList;
+        return coordinatesAfterFoldList;
     }
 
     private static void composeAndPrintGrid(List<int[]> coordinatesList) {
