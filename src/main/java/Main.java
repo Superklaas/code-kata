@@ -10,9 +10,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        List<int[]> coordinatesList = getCoordinatesListFromFile("coordinates2.txt");
+        List<int[]> coordinatesList = getCoordinatesListFromFile("input/coordinates2.txt");
 
-        List<String> foldInstructions = getFoldInstructionsFromFile("foldInstructions2.txt");
+        List<String> foldInstructions = getFoldInstructionsFromFile("input/foldInstructions2.txt");
 
         for (String foldInstruction : foldInstructions) {
             String foldAxis = foldInstruction.substring(0, 1);
