@@ -22,7 +22,7 @@ public class Main {
 
         printCoordinatesList(coordinatesList);
 
-        composeAndPrintGrid(coordinatesList);
+        printGrid(coordinatesList);
 
     }
 
@@ -42,13 +42,6 @@ public class Main {
             coordinatesList.add(coordinates);
         }
         return coordinatesList;
-    }
-
-    private static void printCoordinatesList(List<int[]> coordinatesList) {
-        coordinatesList.stream()
-                .map(Arrays::toString)
-                .forEach(System.out::println);
-        System.out.println("Size list coordinates: " + coordinatesList.size());
     }
 
     private static List<String> getFoldInstructionsFromFile(String fileName) throws FileNotFoundException {
@@ -95,7 +88,14 @@ public class Main {
         return coordinatesAfterFoldList;
     }
 
-    private static void composeAndPrintGrid(List<int[]> coordinatesList) {
+    private static void printCoordinatesList(List<int[]> coordinatesList) {
+        coordinatesList.stream()
+                .map(Arrays::toString)
+                .forEach(System.out::println);
+        System.out.println("Size list coordinates: " + coordinatesList.size());
+    }
+
+    private static void printGrid(List<int[]> coordinatesList) {
         int[] maximums = getMaximums(coordinatesList);
         String[][] grid = composeGrid(coordinatesList, maximums);
         printGrid(grid, maximums);
