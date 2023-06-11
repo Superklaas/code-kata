@@ -20,15 +20,7 @@ part 1: 607 dots visible
 
 part 2: letters CPZLPFZL
 
-## Bugs in answers
 
-### Part 1
-
-dot on (0,1) does not show up
-
-### Part 2
-
-dot on (4,1) does not show up
 
 
 

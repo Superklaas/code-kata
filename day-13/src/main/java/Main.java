@@ -10,9 +10,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        List<int[]> coordinatesList = getCoordinatesListFromFile("day-13/input/coordinates2.txt");
+        List<int[]> coordinatesList = getCoordinatesListFromFile();
 
-        List<String> foldInstructions = getFoldInstructionsFromFile("day-13/input/foldInstructions2.txt");
+        List<String> foldInstructions = getFoldInstructionsFromFile();
 
         for (String foldInstruction : foldInstructions) {
             String foldAxis = foldInstruction.substring(0, 1);
@@ -26,17 +26,13 @@ public class Main {
 
     }
 
-    private static List<int[]> getCoordinatesListFromFile(String fileName) throws FileNotFoundException {
+    private static List<int[]> getCoordinatesListFromFile() throws FileNotFoundException {
         List<int[]> coordinatesList = new ArrayList<>();
-        List<String> coordinatesListString = new ArrayList<>();
-        File coordinatesFile = new File(fileName);
+        File coordinatesFile = new File("day-13/input/coordinates2.txt");
         Scanner scanner = new Scanner(coordinatesFile);
         while (scanner.hasNext()) {
-            coordinatesListString.add(scanner.nextLine());
-        }
-        for (String input : coordinatesListString) {
-            String[] coordinatesString = input.split(",");
             int[] coordinates = new int[2];
+            String[] coordinatesString = scanner.nextLine().split(",");
             coordinates[0] = Integer.parseInt(coordinatesString[0]);
             coordinates[1] = Integer.parseInt(coordinatesString[1]);
             coordinatesList.add(coordinates);
@@ -44,48 +40,50 @@ public class Main {
         return coordinatesList;
     }
 
-    private static List<String> getFoldInstructionsFromFile(String fileName) throws FileNotFoundException {
-        File foldInstructionsFile = new File(fileName);
-        Scanner scanner = new Scanner(foldInstructionsFile);
+    private static List<String> getFoldInstructionsFromFile() throws FileNotFoundException {
         List<String> foldInstructions = new ArrayList<>();
+        File foldInstructionsFile = new File("day-13/input/foldInstructions2.txt");
+        Scanner scanner = new Scanner(foldInstructionsFile);
         while (scanner.hasNext()) {
             foldInstructions.add(scanner.nextLine().substring(11));
         }
         return foldInstructions;
     }
 
-    private static List<int[]> fold(List<int[]> originalCoordinatesList, String foldAxis, int foldLine) {
-        List<int[]> coordinatesAfterFoldList = new ArrayList<>();
+    private static List<int[]> fold(List<int[]> oldCoordinatesList, String foldAxis, int foldLine) {
+        List<int[]> newCoordinatesList = new ArrayList<>();
         if ("y".equals(foldAxis)) {
-            for (int[] originalCoordinates : originalCoordinatesList) {
-                int coordinateX = originalCoordinates[0];
-                int coordinateY = originalCoordinates[1];
+            for (int[] oldCoordinates : oldCoordinatesList) {
+                int coordinateX = oldCoordinates[0];
+                int coordinateY = oldCoordinates[1];
                 if (coordinateY < foldLine) {
-                    coordinatesAfterFoldList.add(originalCoordinates);
+                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
+                        newCoordinatesList.add(oldCoordinates);
+                    }
                 } else {
-                    int[] foldedCoordinates = {coordinateX, 2 * foldLine - coordinateY};
-                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == foldedCoordinates[0] && coordinates[1] == foldedCoordinates[0])) {
-                        coordinatesAfterFoldList.add(foldedCoordinates);
+                    int[] newCoordinates = {coordinateX, 2 * foldLine - coordinateY};
+                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
+                        newCoordinatesList.add(newCoordinates);
                     }
                 }
             }
         } else {
-            for (int[] oldCoordinates : originalCoordinatesList) {
+            for (int[] oldCoordinates : oldCoordinatesList) {
                 int coordinateX = oldCoordinates[0];
                 int coordinateY = oldCoordinates[1];
                 if (coordinateX < foldLine) {
-                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
-                        coordinatesAfterFoldList.add(oldCoordinates);
+                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
+                        newCoordinatesList.add(oldCoordinates);
                     }
                 } else {
                     int[] newCoordinates = {2 * foldLine - coordinateX, coordinateY};
-                    if (coordinatesAfterFoldList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
-                        coordinatesAfterFoldList.add(newCoordinates);
+                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
+                        newCoordinatesList.add(newCoordinates);
                     }
                 }
             }
         }
-        return coordinatesAfterFoldList;
+        return newCoordinatesList;
     }
 
     private static void printCoordinatesList(List<int[]> coordinatesList) {
