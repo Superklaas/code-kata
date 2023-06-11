@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class RomanToArabicApp {
+public class ArabicToRoman {
 
     private static final List<String> romanNumerals = List.of("I", "V", "X", "L", "C", "D", "M", "V̅", "X̅");
 
@@ -12,7 +12,6 @@ public class RomanToArabicApp {
         StringBuilder output = new StringBuilder();
 
         List<Integer> inputList = convertInputToIntegerList(input);
-
         validateInput(inputList);
 
         while (inputList.size() != 0) {
