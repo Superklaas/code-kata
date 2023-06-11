@@ -56,6 +56,9 @@ public class ArabicToRoman {
         if (inputList.size() > 4) {
             throw new InvalidNumberException("input can contain maximum 4 digits");
         }
+        if (inputList.get(0) > 3) {
+            throw new InvalidNumberException("input has to be smaller than 4000");
+        }
         if (inputList.get(0) == 0) {
             throw new InvalidNumberException("first digit input cannot be zero");
         }

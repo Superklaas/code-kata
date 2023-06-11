@@ -47,8 +47,6 @@ We've listed the differences below in the rules.
 Build a system that can convert Roman numerals to arabic numbers and vice versa.
 
 ## Presumptions
-Input = arabic numeral as a string
-- only digits in original string
-- maximum 4 digits, zero not included --> range 1-9999
+Input = arabic numeral as a string, range 1-3999
 
 Validators are written at start of method to verify these conditions
