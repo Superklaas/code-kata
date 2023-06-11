@@ -23,9 +23,9 @@ public class ArabicToRoman {
     }
 
     private static List<Integer> calculateRomanNumeral(StringBuilder output, List<Integer> inputList, int indexNumber) {
-        String firstRomanDigit = romanNumerals.get(2*indexNumber); //C
-        String secondRomanDigit = romanNumerals.get(2*indexNumber + 1);  //D
-        String thirdRomanDigit = romanNumerals.get(2*indexNumber + 2); //M
+        String firstRomanDigit = romanNumerals.get(2*indexNumber);
+        String secondRomanDigit = romanNumerals.get(2*indexNumber + 1);
+        String thirdRomanDigit = romanNumerals.get(2*indexNumber + 2);
         Integer consideredNumber = inputList.get(0);
         if (consideredNumber / 9 == 1) {
             output.append(firstRomanDigit);
