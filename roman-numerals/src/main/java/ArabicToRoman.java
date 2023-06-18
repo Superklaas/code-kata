@@ -22,9 +22,9 @@ public class ArabicToRoman {
 
     private static void calculateRomanNumeral(StringBuilder output, List<Integer> inputList) {
         int rank = inputList.size() - 1;
-        RomanNumeral romanNumeral1 = RomanNumeral.valueOfIndex(2 * rank);
-        RomanNumeral romanNumeral2 = RomanNumeral.valueOfIndex(2 * rank + 1);
-        RomanNumeral romanNumeral3 = RomanNumeral.valueOfIndex(2 * rank + 2);
+        RomanNumeral romanNumeral1 = RomanNumeral.values()[2 * rank];
+        RomanNumeral romanNumeral2 = RomanNumeral.values()[2 * rank + 1];
+        RomanNumeral romanNumeral3 = RomanNumeral.values()[2 * rank + 2];
         Integer consideredNumber = inputList.get(0);
         if (consideredNumber / 9 == 1) {
             output.append(romanNumeral1.getRomanValue());
