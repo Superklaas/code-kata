@@ -8,6 +8,9 @@ import java.util.Scanner;
 
 public class Main {
 
+    public static final String COORDINATES_FILE = "advent-of-code-2021-day-13/input/coordinates1.txt";
+    public static final String FOLD_INSTRUCTIONS_FILE = "advent-of-code-2021-day-13/input/foldInstructions1.txt";
+
     public static void main(String[] args) throws IOException {
 
         List<int[]> coordinatesList = getCoordinatesListFromFile();
@@ -30,7 +33,7 @@ public class Main {
 
     private static List<int[]> getCoordinatesListFromFile() throws FileNotFoundException {
         List<int[]> coordinatesList = new ArrayList<>();
-        File coordinatesFile = new File("day-13/input/coordinates1.txt");
+        File coordinatesFile = new File(COORDINATES_FILE);
         Scanner scanner = new Scanner(coordinatesFile);
         while (scanner.hasNext()) {
             int[] coordinates = new int[2];
@@ -44,7 +47,7 @@ public class Main {
 
     private static List<String> getFoldInstructionsFromFile() throws FileNotFoundException {
         List<String> foldInstructions = new ArrayList<>();
-        File foldInstructionsFile = new File("day-13/input/foldInstructions1.txt");
+        File foldInstructionsFile = new File(FOLD_INSTRUCTIONS_FILE);
         Scanner scanner = new Scanner(foldInstructionsFile);
         while (scanner.hasNext()) {
             foldInstructions.add(scanner.nextLine().substring(11));
