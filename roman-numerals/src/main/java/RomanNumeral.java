@@ -1,6 +1,3 @@
-import java.util.HashMap;
-import java.util.Map;
-
 public enum RomanNumeral {
 
     I(0,"I",1),

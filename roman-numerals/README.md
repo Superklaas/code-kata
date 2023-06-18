@@ -50,3 +50,13 @@ Build a system that can convert Roman numerals to arabic numbers and vice versa.
 Input = arabic numeral as a string, range 1-3999
 
 Validators are written at start of method to verify these conditions
+
+## Enum RomanNumeral
+Enum class with three variables 
+- rank: the rank (units, tens, hundreds, ...) in which the number appears in an arabic number with decimal number system
+- roman value: the roman value
+- arabic value: the corresponding arabic value
+
+
+
+
