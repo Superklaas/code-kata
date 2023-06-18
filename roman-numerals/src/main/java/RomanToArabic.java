@@ -4,52 +4,45 @@ import java.util.List;
 
 public class RomanToArabic {
 
-    private static final List<String> romanNumerals = List.of("I", "V", "X", "L", "C", "D", "M", "V̅", "X̅");
-
     public static void main(String[] args) {
 
-        String input = "MCMXCIX";
+        String input = "XVIII";
         int output = 0;
 
         List<String> inputList = convertInputToList(input);
 
         validateInput(inputList);
 
-        output = calculateArabicNumeral(output, inputList);
+        while (inputList.size() != 0) {
+            output = calculateArabicNumeral(output, inputList);
+        }
 
         System.out.println("roman number " + input + " converted to arabic number " + output);
 
     }
 
     private static int calculateArabicNumeral(int output, List<String> inputList) {
-        while (inputList.size() != 0) {
-            int index = switch (inputList.get(0)) {
-                case "M" -> 3;
-                case "D", "C" -> 2;
-                case "L", "X" -> 1;
-                default -> 0;
-            };
-            String firstRomanDigit = romanNumerals.get(2 * index);
-            String secondRomanDigit = romanNumerals.get(2 * index + 1);
-            String thirdRomanDigit = romanNumerals.get(2 * index + 2);
-            if (secondRomanDigit.equals(inputList.get(0))) {
-                output += 5 * Math.pow(10, index);
+        int rank = RomanNumeral.valueOf(inputList.get(0)).getRank();
+        RomanNumeral romanNumeral1 = RomanNumeral.valueOfIndex(2 * rank);
+        RomanNumeral romanNumeral2 = RomanNumeral.valueOfIndex(2 * rank + 1);
+        RomanNumeral romanNumeral3 = RomanNumeral.valueOfIndex(2 * rank + 2);
+        if (romanNumeral2.getRomanValue().equals(inputList.get(0))) {
+            output += romanNumeral2.getArabicValue();
+            inputList.remove(inputList.get(0));
+        }
+        if (romanNumeral1.getRomanValue().equals(inputList.get(0))) {
+            if (romanNumeral3.getRomanValue().equals(inputList.get(1))) {
+                output += romanNumeral3.getArabicValue() - romanNumeral1.getArabicValue();
                 inputList.remove(inputList.get(0));
-            }
-            if (firstRomanDigit.equals(inputList.get(0))) {
-                if (thirdRomanDigit.equals(inputList.get(1))) {
-                    output += 9 * Math.pow(10, index);
+                inputList.remove(inputList.get(0));
+            } else if (romanNumeral2.getRomanValue().equals(inputList.get(1))) {
+                output += romanNumeral2.getArabicValue() - romanNumeral1.getArabicValue();
+                inputList.remove(inputList.get(0));
+                inputList.remove(inputList.get(0));
+            } else {
+                while (inputList.size() > 0 && romanNumeral1.getRomanValue().equals(inputList.get(0))) {
+                    output += romanNumeral1.getArabicValue();
                     inputList.remove(inputList.get(0));
-                    inputList.remove(inputList.get(0));
-                } else if (secondRomanDigit.equals(inputList.get(1))) {
-                    output += 4 * Math.pow(10, index);
-                    inputList.remove(inputList.get(0));
-                    inputList.remove(inputList.get(0));
-                } else {
-                    while (inputList.size() > 0 && firstRomanDigit.equals(inputList.get(0))) {
-                        output += 1 * Math.pow(10, index);
-                        inputList.remove(inputList.get(0));
-                    }
                 }
             }
         }
@@ -57,7 +50,11 @@ public class RomanToArabic {
     }
 
     private static void validateInput(List<String> inputList) {
-        if (inputList.stream().anyMatch(string -> !romanNumerals.contains(string))) {
+        if (inputList.stream()
+                .anyMatch(input -> !Arrays.stream(RomanNumeral.values())
+                        .map(RomanNumeral::getRomanValue)
+                        .toList()
+                        .contains(input))) {
             throw new InvalidNumberException("input contains strings that are no roman numerals");
         }
     }
