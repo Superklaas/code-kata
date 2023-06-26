@@ -3,7 +3,7 @@ public class Application {
     public static void main(String[] args) {
 
         String originalWord = "meetmebythetree";
-        String keyword = "klaas";
+        String keyword = "ottoplakalp";
         System.out.println("Original word: " + originalWord);
         System.out.println("Keyword: " + keyword);
 
