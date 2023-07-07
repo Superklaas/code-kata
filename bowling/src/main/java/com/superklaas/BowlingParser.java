@@ -3,11 +3,11 @@ package com.superklaas;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BowlingService {
+public class BowlingParser {
 
     public List<Roll> createRollList(String input) {
         List<Roll> rollList = new ArrayList<>();
-        int rollIndex = 1;
+        int rollIndex = 0;
         for (String frame : input.split(" ")) {
             if ("X".equals(frame)) {
                 rollList.add(new Roll(rollIndex, 10));
@@ -36,8 +36,8 @@ public class BowlingService {
 
     public List<Frame> createFrameList(String input) {
         List<Frame> frameList = new ArrayList<>();
-        int rollIndex = 1;
-        int frameIndex = 1;
+        int rollIndex = 0;
+        int frameIndex = 0;
         String[] frames = input.split(" ");
         for (int i = 0; i < 10; i++) {
             Roll roll1;

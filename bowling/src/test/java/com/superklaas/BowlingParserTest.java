@@ -18,20 +18,20 @@ import static org.assertj.core.groups.Tuple.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class BowlingServiceTest {
+class BowlingParserTest {
 
-    BowlingService bowlingService;
+    BowlingParser bowlingParser;
 
     @BeforeEach
     void setUp() {
-        bowlingService = new BowlingService();
+        bowlingParser = new BowlingParser();
     }
 
     @Test
     void createFrameList_allStrikes() {
         // ARRANGE
         String input = "X X X X X X X X X X X X";
-        List<Integer> frameIndexes = IntStream.range(1, 11).boxed().toList();
+        List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(1, 10), tuple(2, 10), tuple(3, 10),
                 tuple(4, 10), tuple(5, 10), tuple(6, 10), tuple(7, 10),
                 tuple(8, 10), tuple(9, 10), tuple(10, 10));
@@ -39,7 +39,7 @@ class BowlingServiceTest {
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, false));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, true));
         // ACT
-        List<Frame> actualFrameList = bowlingService.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -65,7 +65,7 @@ class BowlingServiceTest {
     void createFrameList_allNinesAndZeros() {
         // ARRANGE
         String input = "9- 9- 9- 9- 9- 9- 9- 9- 9- 9-";
-        List<Integer> frameIndexes = IntStream.range(1, 11).boxed().toList();
+        List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(1, 9), tuple(3, 9), tuple(5, 9), tuple(7, 9),
                 tuple(9, 9), tuple(11, 9), tuple(13, 9), tuple(15, 9),
                 tuple(17, 9), tuple(19, 9));
@@ -75,7 +75,7 @@ class BowlingServiceTest {
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, false));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, false));
         // ACT
-        List<Frame> actualFrameList = bowlingService.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -102,7 +102,7 @@ class BowlingServiceTest {
     void createFrameList_allFivesAndSpares() {
         // ARRANGE
         String input = "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5";
-        List<Integer> frameIndexes = IntStream.range(1, 11).boxed().toList();
+        List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(1, 5), tuple(3, 5), tuple(5, 5), tuple(7, 5),
                 tuple(9, 5), tuple(11, 5), tuple(13, 5), tuple(15, 5),
                 tuple(17, 5), tuple(19, 5));
@@ -112,7 +112,7 @@ class BowlingServiceTest {
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, true));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, false));
         // ACT
-        List<Frame> actualFrameList = bowlingService.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -139,7 +139,7 @@ class BowlingServiceTest {
     void createFrameList_mixedInput() {
         // ARRANGE
         String input = "X 6/ 81 26 9- 9/ 71 8/ 1- X 25";
-        List<Integer> frameIndexes = IntStream.range(1, 11).boxed().toList();
+        List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(
                 tuple(1, 10), tuple(2, 6), tuple(4, 8), tuple(6, 2),
                 tuple(8, 9), tuple(10, 9), tuple(12, 7), tuple(14, 8),
@@ -150,7 +150,7 @@ class BowlingServiceTest {
         List<Boolean> spares = List.of(false, true, false, false, false, true, false, true, false, false);
         List<Boolean> strikes = List.of(true, false, false, false, false, false, false, false, false, true);
         // ACT
-        List<Frame> actualFrameList = bowlingService.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -177,7 +177,7 @@ class BowlingServiceTest {
     void createRollList(String input, List<Tuple> expectedRollList) {
         // ARRANGE
         // ACT
-        List<Roll> actualRollList = bowlingService.createRollList(input);
+        List<Roll> actualRollList = bowlingParser.createRollList(input);
         // ASSERT
         assertThat(actualRollList)
                 .extracting("rollIndex", "pins")
