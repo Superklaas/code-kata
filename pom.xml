@@ -13,6 +13,7 @@
         <module>advent-of-code-2021-day-13</module>
         <module>roman-numerals</module>
         <module>alphabet-cypher</module>
+        <module>savings-calculator</module>
     </modules>
 
     <properties>
