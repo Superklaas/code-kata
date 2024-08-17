@@ -10,19 +10,19 @@ public class Encoder {
 
         List<String> encodedLetterList = new ArrayList<>();
         for (int i = 0; i < inputList.size(); i++) {
+            String encodedLetter;
             int rowIndex = Alphabet.valueOf(inputList.get(i).toUpperCase()).ordinal();
             int columnIndex = Alphabet.valueOf(keywordList.get(i).toUpperCase()).ordinal();
             int encodedLetterIndex = rowIndex + columnIndex;
-            String encodedLetter;
             if (encodedLetterIndex < 26) {
                 encodedLetter = Alphabet.values()[encodedLetterIndex].name();
             } else {
-                encodedLetter = Alphabet.values()[encodedLetterIndex-26].name();
+                encodedLetter = Alphabet.values()[encodedLetterIndex - 26].name();
             }
             encodedLetterList.add(encodedLetter);
         }
 
-        return String.join("",encodedLetterList).toLowerCase();
+        return String.join("", encodedLetterList).toLowerCase();
 
     }
 
