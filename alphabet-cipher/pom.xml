@@ -10,6 +10,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>alphabet-cypher</artifactId>
+    <artifactId>alphabet-cipher</artifactId>
 
 </project>
