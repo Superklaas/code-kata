@@ -1,23 +1,25 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArabicToRoman {
 
     public static void main(String[] args) {
 
-        String input = "1109";
-        StringBuilder output = new StringBuilder();
-
+        // convert & validate input string
+        String input = "2456";
         List<Integer> inputList = convertInputToList(input);
-
         validateInput(inputList);
 
+        // calculate roman numeral
+        StringBuilder output = new StringBuilder();
         while (inputList.size() != 0) {
             calculateRomanNumeral(output, inputList);
         }
 
         System.out.println("arabic number " + input + " converted to roman number " + output);
+
     }
 
     private static void calculateRomanNumeral(StringBuilder output, List<Integer> inputList) {
@@ -54,15 +56,13 @@ public class ArabicToRoman {
     }
 
     private static List<Integer> convertInputToList(String input) {
-        List<Integer> inputList;
         try {
-            inputList = new ArrayList<>(Arrays.stream(input.split(""))
+            return Arrays.stream(input.split(""))
                     .map(Integer::parseInt)
-                    .toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
         } catch (NumberFormatException e) {
-            throw new InvalidNumberException("input string can only contain numerals");
+            throw new InvalidNumberException("input string can only contain numbers");
         }
-        return inputList;
     }
 
 }

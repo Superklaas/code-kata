@@ -1,18 +1,17 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RomanToArabic {
 
     public static void main(String[] args) {
 
-        String input = "XVIII";
-        int output = 0;
-
+        String input = "MDCCXLIX";
         List<String> inputList = convertInputToList(input);
-
         validateInput(inputList);
 
+        int output = 0;
         while (inputList.size() != 0) {
             output = calculateArabicNumeral(output, inputList);
         }
@@ -50,8 +49,7 @@ public class RomanToArabic {
     }
 
     private static void validateInput(List<String> inputList) {
-        if (inputList.stream()
-                .anyMatch(input -> !Arrays.stream(RomanNumeral.values())
+        if (inputList.stream().anyMatch(input -> !Arrays.stream(RomanNumeral.values())
                         .map(RomanNumeral::getRomanValue)
                         .toList()
                         .contains(input))) {
@@ -60,7 +58,8 @@ public class RomanToArabic {
     }
 
     private static List<String> convertInputToList(String input) {
-        return new ArrayList<>(Arrays.stream(input.split("")).toList());
+        return Arrays.stream(input.split(""))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
 }
