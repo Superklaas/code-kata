@@ -21,10 +21,10 @@ public class RomanToArabic {
     }
 
     private static int calculateArabicNumeral(int output, List<String> inputList) {
-        int rank = RomanNumeral.valueOf(inputList.get(0)).getRank();
-        RomanNumeral romanNumeral1 = RomanNumeral.values()[2 * rank];
-        RomanNumeral romanNumeral2 = RomanNumeral.values()[2 * rank + 1];
-        RomanNumeral romanNumeral3 = RomanNumeral.values()[2 * rank + 2];
+        int placeValue = RomanNumeral.valueOf(inputList.get(0)).getPlaceValue();
+        RomanNumeral romanNumeral1 = RomanNumeral.values()[2 * placeValue];
+        RomanNumeral romanNumeral2 = RomanNumeral.values()[2 * placeValue + 1];
+        RomanNumeral romanNumeral3 = RomanNumeral.values()[2 * placeValue + 2];
         if (romanNumeral2.getRomanValue().equals(inputList.get(0))) {
             output += romanNumeral2.getArabicValue();
             inputList.remove(inputList.get(0));

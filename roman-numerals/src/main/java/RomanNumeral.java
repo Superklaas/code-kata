@@ -10,18 +10,18 @@ public enum RomanNumeral {
     VV(3,"V̅",5000),
     XX(4,"X̅",10000);
 
-    private final int rank;
+    private final int placeValue; // index digit in decimal number: units 0, tens 1, hundreds 2, thousands 3, ...
     private final String romanValue;
     private final int arabicValue;
 
-    RomanNumeral(int rank, String romanValue, int arabicValue) {
-        this.rank = rank;
+    RomanNumeral(int placeValue, String romanValue, int arabicValue) {
+        this.placeValue = placeValue;
         this.romanValue = romanValue;
         this.arabicValue = arabicValue;
     }
 
-    public int getRank() {
-        return rank;
+    public int getPlaceValue() {
+        return placeValue;
     }
 
     public String getRomanValue() {

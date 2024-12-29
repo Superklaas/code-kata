@@ -8,7 +8,7 @@ public class ArabicToRoman {
     public static void main(String[] args) {
 
         // convert & validate input string
-        String input = "2456";
+        String input = "2496";
         List<Integer> inputList = convertInputToList(input);
         validateInput(inputList);
 
@@ -23,10 +23,10 @@ public class ArabicToRoman {
     }
 
     private static void calculateRomanNumeral(StringBuilder output, List<Integer> inputList) {
-        int rank = inputList.size() - 1;
-        RomanNumeral romanNumeral1 = RomanNumeral.values()[2 * rank];
-        RomanNumeral romanNumeral2 = RomanNumeral.values()[2 * rank + 1];
-        RomanNumeral romanNumeral3 = RomanNumeral.values()[2 * rank + 2];
+        int placeValue = inputList.size() - 1;
+        RomanNumeral romanNumeral1 = RomanNumeral.values()[2 * placeValue];
+        RomanNumeral romanNumeral2 = RomanNumeral.values()[2 * placeValue + 1];
+        RomanNumeral romanNumeral3 = RomanNumeral.values()[2 * placeValue + 2];
         Integer consideredNumber = inputList.get(0);
         if (consideredNumber / 9 == 1) {
             output.append(romanNumeral1.getRomanValue());
