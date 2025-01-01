@@ -185,7 +185,7 @@ class BowlingParserTest {
     static Stream<Arguments> createRollListData() {
         return Stream.of(
                 arguments(
-                        "X X X X X X X X X X X X",
+                        "X X X X X X X X X XXX",
                         List.of(tuple(0, 10), tuple(1, 10),
                                 tuple(2, 10), tuple(3, 10),
                                 tuple(4, 10), tuple(5, 10),
@@ -209,7 +209,7 @@ class BowlingParserTest {
                         )
                 ),
                 arguments(
-                        "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5",
+                        "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5",
                         List.of(tuple(0, 5), tuple(1, 5),
                                 tuple(2, 5), tuple(3, 5),
                                 tuple(4, 5), tuple(5, 5),
@@ -224,7 +224,7 @@ class BowlingParserTest {
                         )
                 ),
                 arguments(
-                        "X 6/ 81 26 9- 9/ 71 8/ 1- X 25",
+                        "X 6/ 81 26 9- 9/ 71 8/ 1- X25",
                         List.of(tuple(0, 10), tuple(1, 6),
                                 tuple(2, 4), tuple(3, 8),
                                 tuple(4, 1), tuple(5, 2),
