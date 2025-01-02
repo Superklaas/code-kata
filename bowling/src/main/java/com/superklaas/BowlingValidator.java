@@ -84,12 +84,12 @@ public class BowlingValidator {
 
     /**
      * Frame 1-9:  1) hyphen or digit 1-9, 2) forward slash. <br>
-     * Frame 10: 1) hyphen or digit 1-9, 2) forward slash, 3) hyphen or digit 1-9.
+     * Frame 10: 1) hyphen or digit 1-9, 2) forward slash or hyphen or digit 1-9, 3) forward slash or hyphen or digit 1-9.
      */
     private void checkSpares(String[] frames) {
-        // last frame: three characters with / as second character
-        if (frames[9].contains("/") && !frames[9].matches("[1-9\\-]/[1-9\\-]")) {
-            throw new BowlingException("A spare in frame 10 should have 2 digits/hyphens separated by a forward slash: "
+        // last frame: three characters with / as second character or third character
+        if (frames[9].contains("/") && !frames[9].matches("(?i)^[1-9\\-]/[x1-9\\-]$|^[x1-9\\-][1-9\\-]/$")) {
+            throw new BowlingException("A spare in frame 10 should have a forward slash as second or third character: "
                     + Arrays.toString(frames));
         }
         // regular frames: 2 characters with / as second character
