@@ -3,12 +3,9 @@ package com.superklaas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,12 +26,18 @@ class BowlingValidatorTest {
     void splitIntoFrames_validInputString() {
         String[] actualFrames = bowlingValidator.splitIntoFrames(validInputString);
         assertArrayEquals(validFrames, actualFrames);
-        //System.out.println("Valid input string split into frames: " + Arrays.toString(actualFrames));
     }
 
-    @Test
-    void validateFrames_validFrames() {
-        bowlingValidator.validateFrames(validFrames);
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "X 6/ 81 26 9- 9/ 71 8/ 1- X25",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- X2/",
+            "X X X X X X X X X XXX",
+            "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5"
+    })
+    void validateFrames_validFrames(String input) {
+        String[] frames = input.split(" ");
+        assertDoesNotThrow(() -> bowlingValidator.validateFrames(frames));
     }
 
     @ParameterizedTest
@@ -93,8 +96,14 @@ class BowlingValidatorTest {
     }
 
     @ParameterizedTest
-    @MethodSource("invalidStrikeInLastFrame")
-    void validateFrames_invalidStrikeInLastFrame(String[] frames) {
+    @ValueSource(strings = {
+            "X 6/ 81 26 9- 9/ 71 8/ 1- X2",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- X",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- 24X",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- X29"
+    })
+    void validateFrames_invalidStrikeInLastFrame(String input) {
+        String[] frames = input.split(" ");
         BowlingException bowlingException = assertThrows(BowlingException.class, () -> bowlingValidator.validateFrames(frames));
         String actualMessage = bowlingException.getMessage();
         String expectedMessage1 = "A strike in frame 10 should be one X followed by two characters: " + Arrays.toString(frames);
@@ -105,19 +114,13 @@ class BowlingValidatorTest {
         );
     }
 
-    public static Stream<Arguments> invalidStrikeInLastFrame() {
-        return Stream.of(
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- X2".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- X".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- 24X".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- X29".split(" "))
-
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("invalidSpareInRegularFrame")
-    void validateFrames_invalidSpareInRegularFrame(String[] frames) {
+    @ValueSource(strings = {
+            "X 6/ 81 26 9- / 71 8/ 1- X25",
+            "X 6/ 81 26 9- /9 71 8/ 1- X25"
+    })
+    void validateFrames_invalidSpareInRegularFrame(String input) {
+        String[] frames = input.split(" ");
         BowlingException bowlingException = assertThrows(BowlingException.class, () -> bowlingValidator.validateFrames(frames));
         assertEquals(
                 "A spare in frame 1-9 should be a digit/hyphen followed by a forward slash: " + Arrays.toString(frames),
@@ -125,45 +128,32 @@ class BowlingValidatorTest {
         );
     }
 
-    public static Stream<Arguments> invalidSpareInRegularFrame() {
-        return Stream.of(
-                Arguments.arguments((Object) "X 6/ 81 26 9- / 71 8/ 1- X25".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- /9 71 8/ 1- X25".split(" "))
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("invalidSpareInLastFrame")
-    void validateFrames_invalidSpareInLastFrame(String[] frames) {
+    @ValueSource(strings = {
+            "X 6/ 81 26 9- 9/ 71 8/ 1- 2/",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- /25",
+            "X 6/ 81 26 9- 9/ 71 8/ 1- -//"
+    })
+    void validateFrames_invalidSpareInLastFrame(String input) {
+        String[] frames = input.split(" ");
         BowlingException bowlingException = assertThrows(BowlingException.class, () -> bowlingValidator.validateFrames(frames));
         assertEquals(
-                "A spare in frame 10 should have 2 digits/hyphens separated by a forward slash: " + Arrays.toString(frames),
+                "A spare in frame 10 should have a forward slash as second or third character: " + Arrays.toString(frames),
                 bowlingException.getMessage()
         );
     }
 
-    public static Stream<Arguments> invalidSpareInLastFrame() {
-        return Stream.of(
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- 2/".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- /25".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 71 8/ 1- -//".split(" "))
-        );
-    }
-
     @ParameterizedTest
-    @MethodSource("invalidSumDigitsInRegularFrame")
-    void validateFrames_invalidSumDigitsInRegularFrame(String[] frames) {
+    @ValueSource(strings = {
+            "X 6/ 81 28 9- 9/ 71 8/ 1- X25",
+            "X 6/ 81 26 9- 9/ 78 8/ 1- X25"
+    })
+    void validateFrames_invalidSumDigitsInRegularFrame(String input) {
+        String[] frames = input.split(" ");
         BowlingException bowlingException = assertThrows(BowlingException.class, () -> bowlingValidator.validateFrames(frames));
         assertEquals(
                 "Sum of two digits in a frame cannot be greater than 10: " + Arrays.toString(frames),
                 bowlingException.getMessage()
-        );
-    }
-
-    public static Stream<Arguments> invalidSumDigitsInRegularFrame() {
-        return Stream.of(
-                Arguments.arguments((Object) "X 6/ 81 28 9- 9/ 71 8/ 1- X25".split(" ")),
-                Arguments.arguments((Object) "X 6/ 81 26 9- 9/ 78 8/ 1- X25".split(" "))
         );
     }
 
