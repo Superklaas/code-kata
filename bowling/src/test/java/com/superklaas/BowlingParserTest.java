@@ -30,16 +30,19 @@ class BowlingParserTest {
     @Test
     void createFrameList_allStrikes() {
         // ARRANGE
-        String input = "X X X X X X X X X X X X";
+        String input = "X X X X X X X X X XXX";
+        String[] frames = input.split(" ");
         List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(0, 10), tuple(1, 10), tuple(2, 10),
                 tuple(2, 10), tuple(3, 10), tuple(4, 10), tuple(5, 10),
                 tuple(6, 10), tuple(7, 10), tuple(8, 10), tuple(9, 10));
-        List<Tuple> secondRolls = new ArrayList<>(Collections.nCopies(10, null));
+        List<Roll> secondRolls = Stream.concat(Stream.<Roll>generate(() -> null).limit(9), Stream.of(new Roll(10, 10))).toList();
+        List<Roll> thirdRolls = Stream.concat(Stream.<Roll>generate(() -> null).limit(9), Stream.of(new Roll(11, 10))).toList();
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, false));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, true));
         // ACT
-        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(frames);
+        System.out.println(actualFrameList);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -49,6 +52,9 @@ class BowlingParserTest {
                 () -> assertThat(actualFrameList)
                         .extracting("roll2")
                         .hasSameElementsAs(secondRolls),
+                () -> assertThat(actualFrameList)
+                        .extracting("roll3")
+                        .hasSameElementsAs(thirdRolls),
                 () -> assertThat(actualFrameList)
                         .extracting("frameIndex")
                         .containsAll(frameIndexes),
@@ -65,6 +71,7 @@ class BowlingParserTest {
     void createFrameList_allNinesAndZeros() {
         // ARRANGE
         String input = "9- 9- 9- 9- 9- 9- 9- 9- 9- 9-";
+        String[] frames = input.split(" ");
         List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(0, 9), tuple(2, 9), tuple(4, 9), tuple(6, 9),
                 tuple(8, 9), tuple(10, 9), tuple(12, 9), tuple(14, 9),
@@ -72,10 +79,12 @@ class BowlingParserTest {
         List<Tuple> secondRolls = List.of(tuple(1, 0), tuple(3, 0), tuple(5, 0), tuple(7, 0),
                 tuple(9, 0), tuple(11, 0), tuple(13, 0), tuple(15, 0),
                 tuple(17, 0), tuple(19, 0));
+        List<Roll> thirdRolls = Stream.<Roll>generate(() -> null).limit(10).toList();
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, false));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, false));
         // ACT
-        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(frames);
+        System.out.println(actualFrameList);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -86,6 +95,9 @@ class BowlingParserTest {
                         .extracting("roll2")
                         .extracting("rollIndex", "pins")
                         .hasSameElementsAs(secondRolls),
+                () -> assertThat(actualFrameList)
+                        .extracting("roll3")
+                        .hasSameElementsAs(thirdRolls),
                 () -> assertThat(actualFrameList)
                         .extracting("frameIndex")
                         .containsAll(frameIndexes),
@@ -101,7 +113,8 @@ class BowlingParserTest {
     @Test
     void createFrameList_allFivesAndSpares() {
         // ARRANGE
-        String input = "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5";
+        String input = "5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/ 5/5";
+        String[] frames = input.split(" ");
         List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(tuple(0, 5), tuple(2, 5), tuple(4, 5), tuple(6, 5),
                 tuple(8, 5), tuple(10, 5), tuple(12, 5), tuple(14, 5),
@@ -109,10 +122,12 @@ class BowlingParserTest {
         List<Tuple> secondRolls = List.of(tuple(1, 5), tuple(3, 5), tuple(5, 5), tuple(7, 5),
                 tuple(9, 5), tuple(11, 5), tuple(13, 5), tuple(15, 5),
                 tuple(17, 5), tuple(19, 5));
+        List<Roll> thirdRolls = Stream.concat(Stream.<Roll>generate(() -> null).limit(9), Stream.of(new Roll(20, 5))).toList();
         List<Boolean> spares = new ArrayList<>(Collections.nCopies(10, true));
         List<Boolean> strikes = new ArrayList<>(Collections.nCopies(10, false));
         // ACT
-        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(frames);
+        System.out.println(actualFrameList);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -123,6 +138,9 @@ class BowlingParserTest {
                         .extracting("roll2")
                         .extracting("rollIndex", "pins")
                         .hasSameElementsAs(secondRolls),
+                () -> assertThat(actualFrameList)
+                        .extracting("roll3")
+                        .hasSameElementsAs(thirdRolls),
                 () -> assertThat(actualFrameList)
                         .extracting("frameIndex")
                         .containsAll(frameIndexes),
@@ -138,16 +156,19 @@ class BowlingParserTest {
     @Test
     void createFrameList_mixedInput() {
         // ARRANGE
-        String input = "X 6/ 81 26 9- 9/ 71 8/ 1- X 25";
+        String input = "X 6/ 81 26 9- 9/ -1 8/ 1- X25";
+        String[] frames = input.split(" ");
         List<Integer> frameIndexes = IntStream.range(0, 10).boxed().toList();
         List<Tuple> firstRolls = List.of(
                 tuple(0, 10), tuple(1, 6), tuple(3, 8), tuple(5, 2),
-                tuple(7, 9), tuple(9, 9), tuple(11, 7), tuple(13, 8),
+                tuple(7, 9), tuple(9, 9), tuple(11, 0), tuple(13, 8),
                 tuple(15, 1), tuple(17, 10));
+        List<Roll> thirdRolls = Stream.concat(Stream.<Roll>generate(() -> null).limit(9), Stream.of(new Roll(19, 5))).toList();
         List<Boolean> spares = List.of(false, true, false, false, false, true, false, true, false, false);
         List<Boolean> strikes = List.of(true, false, false, false, false, false, false, false, false, true);
         // ACT
-        List<Frame> actualFrameList = bowlingParser.createFrameList(input);
+        List<Frame> actualFrameList = bowlingParser.createFrameList(frames);
+        System.out.println(actualFrameList);
         // ASSERT
         assertAll(
                 () -> assertThat(actualFrameList)
@@ -157,6 +178,9 @@ class BowlingParserTest {
                 () -> assertThat(actualFrameList)
                         .extracting("roll2")
                         .containsNull(),
+                () -> assertThat(actualFrameList)
+                        .extracting("roll3")
+                        .hasSameElementsAs(thirdRolls),
                 () -> assertThat(actualFrameList)
                         .extracting("frameIndex")
                         .containsAll(frameIndexes),
@@ -173,8 +197,9 @@ class BowlingParserTest {
     @MethodSource("createRollListData")
     void createRollList(String input, List<Tuple> expectedRollList) {
         // ARRANGE
+        String[] frames = input.split(" ");
         // ACT
-        List<Roll> actualRollList = bowlingParser.createRollList(input);
+        List<Roll> actualRollList = bowlingParser.createRollList(frames);
         // ASSERT
         assertThat(actualRollList)
                 .extracting("rollIndex", "pins")
@@ -224,13 +249,13 @@ class BowlingParserTest {
                         )
                 ),
                 arguments(
-                        "X 6/ 81 26 9- 9/ 71 8/ 1- X25",
+                        "X 6/ 81 26 9- 9/ -1 8/ 1- X25",
                         List.of(tuple(0, 10), tuple(1, 6),
                                 tuple(2, 4), tuple(3, 8),
                                 tuple(4, 1), tuple(5, 2),
                                 tuple(6, 6), tuple(7, 9),
                                 tuple(8, 0), tuple(9, 9),
-                                tuple(10, 1), tuple(11, 7),
+                                tuple(10, 1), tuple(11, 0),
                                 tuple(12, 1), tuple(13, 8),
                                 tuple(14, 2), tuple(15, 1),
                                 tuple(16, 0), tuple(17, 10),

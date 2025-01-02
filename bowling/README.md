@@ -20,11 +20,6 @@ Copied from [Kata-Log](https://kata-log.rocks/bowling-game-kata)
 
 Inspired by [Uncle Bob](http://butunclebob.com/ArticleS.UncleBob.TheBowlingGameKata)
 
-## TODO: 10 frames instead of 11
-last frame as unit of max. three characters
-
-rewrite parsing methods createRollList & createFrameList
-
 ## Validation rules
 10 and only 10 frames in input.
 
