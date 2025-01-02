@@ -1,148 +1,104 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Stream;
 
 public class Main {
 
-    public static final String COORDINATES_FILE = "advent-of-code-2021-day-13/input/coordinates1.txt";
-    public static final String FOLD_INSTRUCTIONS_FILE = "advent-of-code-2021-day-13/input/foldInstructions1.txt";
+    public static final String COORDINATES_FILE = "advent-of-code-2021-day-13/input/coordinates2.txt";
+    public static final String FOLD_INSTRUCTIONS_FILE = "advent-of-code-2021-day-13/input/foldInstructions2.txt";
 
     public static void main(String[] args) throws IOException {
 
-        List<int[]> coordinatesList = getCoordinatesListFromFile();
+        List<Coordinate> coordinates = getCoordinatesFromFile();
+        List<FoldInstruction> foldInstructions = getFoldInstructionsFromFile();
 
-        printGrid(coordinatesList);
+//        printGrid(coordinates); // before folding
 
-        List<String> foldInstructions = getFoldInstructionsFromFile();
-
-        for (String foldInstruction : foldInstructions) {
-            String foldAxis = foldInstruction.substring(0, 1);
-            int foldLine = Integer.parseInt(foldInstruction.split("=")[1]);
-            coordinatesList = fold(coordinatesList, foldAxis, foldLine);
+        for (FoldInstruction foldInstruction : foldInstructions) {
+            coordinates = fold(coordinates, foldInstruction);
         }
 
-        printCoordinatesList(coordinatesList);
-
-        printGrid(coordinatesList);
+        printGrid(coordinates); // after folding
 
     }
 
-    private static List<int[]> getCoordinatesListFromFile() throws FileNotFoundException {
-        List<int[]> coordinatesList = new ArrayList<>();
-        File coordinatesFile = new File(COORDINATES_FILE);
-        Scanner scanner = new Scanner(coordinatesFile);
-        while (scanner.hasNext()) {
-            int[] coordinates = new int[2];
-            String[] coordinatesString = scanner.nextLine().split(",");
-            coordinates[0] = Integer.parseInt(coordinatesString[0]);
-            coordinates[1] = Integer.parseInt(coordinatesString[1]);
-            coordinatesList.add(coordinates);
+    private static List<Coordinate> getCoordinatesFromFile() throws IOException {
+        try (Stream<String> coordinatesStream = Files.lines(Path.of(COORDINATES_FILE))) {
+            return coordinatesStream
+                    .map(string -> string.split(","))
+                    .map(stringArray -> new Coordinate(
+                            Integer.parseInt(stringArray[0]),
+                            Integer.parseInt(stringArray[1])
+                    ))
+                    .toList();
         }
-        return coordinatesList;
     }
 
-    private static List<String> getFoldInstructionsFromFile() throws FileNotFoundException {
-        List<String> foldInstructions = new ArrayList<>();
-        File foldInstructionsFile = new File(FOLD_INSTRUCTIONS_FILE);
-        Scanner scanner = new Scanner(foldInstructionsFile);
-        while (scanner.hasNext()) {
-            foldInstructions.add(scanner.nextLine().substring(11));
-        }
-        return foldInstructions;
+    private static List<FoldInstruction> getFoldInstructionsFromFile() throws IOException {
+        Path foldInstructionsFile = Path.of(FOLD_INSTRUCTIONS_FILE);
+        return Files.readAllLines(foldInstructionsFile).stream()
+                .map(s -> s.substring(11))
+                .map(s -> new FoldInstruction(
+                        FoldInstruction.FoldAxis.valueOf(s.substring(0, 1).toUpperCase()),
+                        Integer.parseInt(s.substring(2))
+                ))
+                .toList();
     }
 
-    private static List<int[]> fold(List<int[]> oldCoordinatesList, String foldAxis, int foldLine) {
-        List<int[]> newCoordinatesList = new ArrayList<>();
-        if ("y".equals(foldAxis)) {
-            for (int[] oldCoordinates : oldCoordinatesList) {
-                int coordinateX = oldCoordinates[0];
-                int coordinateY = oldCoordinates[1];
-                if (coordinateY < foldLine) {
-                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
-                        newCoordinatesList.add(oldCoordinates);
-                    }
+    private static List<Coordinate> fold(List<Coordinate> coordinates, FoldInstruction foldInstruction) {
+        String foldAxis = foldInstruction.foldAxis().name();
+        int foldLine = foldInstruction.foldLine();
+        List<Coordinate> newCoordinates = new ArrayList<>();
+        if ("Y".equals(foldAxis)) {
+            for (Coordinate coordinate : coordinates) {
+                if (coordinate.y() > foldLine) {
+                    newCoordinates.add(new Coordinate(coordinate.x(), 2 * foldLine - coordinate.y()));
                 } else {
-                    int[] newCoordinates = {coordinateX, 2 * foldLine - coordinateY};
-                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
-                        newCoordinatesList.add(newCoordinates);
-                    }
+                    newCoordinates.add(coordinate);
                 }
             }
         } else {
-            for (int[] oldCoordinates : oldCoordinatesList) {
-                int coordinateX = oldCoordinates[0];
-                int coordinateY = oldCoordinates[1];
-                if (coordinateX < foldLine) {
-                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == oldCoordinates[0] && coordinates[1] == oldCoordinates[1])) {
-                        newCoordinatesList.add(oldCoordinates);
-                    }
+            for (Coordinate coordinate : coordinates) {
+                if (coordinate.x() > foldLine) {
+                    newCoordinates.add(new Coordinate(2 * foldLine - coordinate.x(), coordinate.y()));
                 } else {
-                    int[] newCoordinates = {2 * foldLine - coordinateX, coordinateY};
-                    if (newCoordinatesList.stream().noneMatch(coordinates -> coordinates[0] == newCoordinates[0] && coordinates[1] == newCoordinates[1])) {
-                        newCoordinatesList.add(newCoordinates);
-                    }
+                    newCoordinates.add(coordinate);
                 }
             }
         }
-        return newCoordinatesList;
+        return newCoordinates;
     }
 
-    private static void printCoordinatesList(List<int[]> coordinatesList) {
-        coordinatesList.stream()
-                .map(Arrays::toString)
-                .forEach(System.out::println);
-        System.out.println("Size list coordinates: " + coordinatesList.size());
-    }
-
-    private static void printGrid(List<int[]> coordinatesList) {
-        int[] maximums = getMaximums(coordinatesList);
-        String[][] grid = composeGrid(coordinatesList, maximums);
-        printGrid(grid, maximums);
-    }
-
-    private static int[] getMaximums(List<int[]> coordinatesList) {
-        int[] maximums = new int[2];
-        int xMax = 0;
-        int yMax = 0;
-        for (int[] coordinates : coordinatesList) {
-            if (coordinates[0] > xMax) xMax = coordinates[0];
-            if (coordinates[1] > yMax) yMax = coordinates[1];
-        }
-        maximums[0] = xMax;
-        maximums[1] = yMax;
-        return maximums;
-    }
-
-    private static String[][] composeGrid(List<int[]> coordinatesList, int[] maximums) {
-        int xMax = maximums[0];
-        int yMax = maximums[1];
-        String[][] grid = new String[xMax + 1][yMax + 1];
-        for (int y = 0; y <= yMax; y++) {
-            for (int x = 0; x <= xMax; x++) {
-                grid[x][y] = ".";
-            }
-        }
-        for (int[] coordinates : coordinatesList) {
-            grid[coordinates[0]][coordinates[1]] = "&";
-        }
-        return grid;
-    }
-
-    private static void printGrid(String[][] grid, int[] maximums) {
-        int xMax = maximums[0];
-        int yMax = maximums[1];
-        for (int y = 0; y <= yMax; y++) {
-            for (int x = 0; x <= xMax; x++) {
+    private static void printGrid(List<Coordinate> coordinates) {
+        int maxX = getMaxX(coordinates);
+        int maxY = getMaxY(coordinates);
+        String[][] grid = new String[maxX][maxY];
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                grid[x][y] = coordinates.contains(new Coordinate(x, y)) ? "&" : ".";
                 System.out.print(grid[x][y]);
             }
-            System.out.print("\n");
+            System.out.println();
         }
+    }
+
+    private static int getMaxX(List<Coordinate> coordinates) {
+        return coordinates.stream()
+                .map(Coordinate::x)
+                .map(integer -> integer + 1)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    private static int getMaxY(List<Coordinate> coordinates) {
+        return coordinates.stream()
+                .map(Coordinate::y)
+                .map(integer -> integer + 1)
+                .max(Integer::compareTo)
+                .orElse(0);
     }
 
 }
-
-
