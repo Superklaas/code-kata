@@ -10,11 +10,12 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>advent-of-code-2021-day-13</module>
+        <module>advent-of-code-2021</module>
         <module>roman-numerals</module>
         <module>alphabet-cipher</module>
         <module>bowling</module>
         <module>alphabet-cipher-2</module>
+        <module>advent-of-code-2024</module>
     </modules>
 
     <properties>
