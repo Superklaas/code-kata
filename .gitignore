@@ -3,3 +3,5 @@ target/
 *.iml
 advent-of-code-2024/aoc-key.txt
 advent-of-code-2024/*/input
+advent-of-code-2021/*/input
+advent-of-code-2021/*/assignment
