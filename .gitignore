@@ -2,3 +2,4 @@ target/
 .idea
 *.iml
 advent-of-code-2024/aoc-key.txt
+advent-of-code-2024/*/input
