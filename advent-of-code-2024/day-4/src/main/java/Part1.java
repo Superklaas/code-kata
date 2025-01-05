@@ -7,17 +7,17 @@ public class Part1 {
         String[][] inputArray = Commons.convertInputTo2DArray();
 
         int countX = 0;
-        for (int i = 0; i < inputArray.length; i++) {
-            for (int j = 0; j < inputArray[i].length; j++) {
-                if ("X".equals(inputArray[i][j])) {
-                    countX = checkThreeOClock(inputArray, countX, i, j);
-                    countX = checkNineOClock(inputArray, countX, i, j);
-                    countX = checkTwelveOClock(inputArray, countX, i, j);
-                    countX = checkSixOClock(inputArray, countX, i, j);
-                    countX = checkTenThirty(inputArray, countX, i, j);
-                    countX = checkOneThirty(inputArray, countX, i, j);
-                    countX = checkFourThirty(inputArray, countX, i, j);
-                    countX = checkSevenThirty(inputArray, countX, i, j);
+        for (int x = 0; x < inputArray.length; x++) {
+            for (int y = 0; y < inputArray[x].length; y++) {
+                if ("X".equals(inputArray[x][y])) {
+                    countX = checkThreeOClock(inputArray, countX, x, y);
+                    countX = checkNineOClock(inputArray, countX, x, y);
+                    countX = checkTwelveOClock(inputArray, countX, x, y);
+                    countX = checkSixOClock(inputArray, countX, x, y);
+                    countX = checkTenThirty(inputArray, countX, x, y);
+                    countX = checkOneThirty(inputArray, countX, x, y);
+                    countX = checkFourThirty(inputArray, countX, x, y);
+                    countX = checkSevenThirty(inputArray, countX, x, y);
                 }
             }
         }
@@ -26,81 +26,81 @@ public class Part1 {
 
     }
 
-    private static int checkSevenThirty(String[][] inputArray, int count, int i, int j) {
-        if (i - 3 > -1 && j + 3 < inputArray[i].length &&
-                "M".equals(inputArray[i - 1][j + 1]) &&
-                "A".equals(inputArray[i - 2][j + 2]) &&
-                "S".equals(inputArray[i - 3][j + 3])) {
+    private static int checkSevenThirty(String[][] inputArray, int count, int x, int y) {
+        if (x - 3 > -1 && y + 3 < inputArray[x].length &&
+                "M".equals(inputArray[x - 1][y + 1]) &&
+                "A".equals(inputArray[x - 2][y + 2]) &&
+                "S".equals(inputArray[x - 3][y + 3])) {
             count++;
         }
         return count;
     }
 
-    private static int checkFourThirty(String[][] inputArray, int count, int i, int j) {
-        if (i + 3 < inputArray.length && j + 3 < inputArray[i].length &&
-                "M".equals(inputArray[i + 1][j + 1]) &&
-                "A".equals(inputArray[i + 2][j + 2]) &&
-                "S".equals(inputArray[i + 3][j + 3])) {
+    private static int checkFourThirty(String[][] inputArray, int count, int x, int y) {
+        if (x + 3 < inputArray.length && y + 3 < inputArray[x].length &&
+                "M".equals(inputArray[x + 1][y + 1]) &&
+                "A".equals(inputArray[x + 2][y + 2]) &&
+                "S".equals(inputArray[x + 3][y + 3])) {
             count++;
         }
         return count;
     }
 
-    private static int checkOneThirty(String[][] inputArray, int count, int i, int j) {
-        if (i + 3 < inputArray.length && j - 3 > -1 &&
-                "M".equals(inputArray[i + 1][j - 1]) &&
-                "A".equals(inputArray[i + 2][j - 2]) &&
-                "S".equals(inputArray[i + 3][j - 3])) {
+    private static int checkOneThirty(String[][] inputArray, int count, int x, int y) {
+        if (x + 3 < inputArray.length && y - 3 > -1 &&
+                "M".equals(inputArray[x + 1][y - 1]) &&
+                "A".equals(inputArray[x + 2][y - 2]) &&
+                "S".equals(inputArray[x + 3][y - 3])) {
             count++;
         }
         return count;
     }
 
-    private static int checkTenThirty(String[][] inputArray, int count, int i, int j) {
-        if (i - 3 > -1 && j - 3 > -1 &&
-                "M".equals(inputArray[i - 1][j - 1]) &&
-                "A".equals(inputArray[i - 2][j - 2]) &&
-                "S".equals(inputArray[i - 3][j - 3])) {
+    private static int checkTenThirty(String[][] inputArray, int count, int x, int y) {
+        if (x - 3 > -1 && y - 3 > -1 &&
+                "M".equals(inputArray[x - 1][y - 1]) &&
+                "A".equals(inputArray[x - 2][y - 2]) &&
+                "S".equals(inputArray[x - 3][y - 3])) {
             count++;
         }
         return count;
     }
 
-    private static int checkSixOClock(String[][] inputArray, int count, int i, int j) {
-        if (i + 3 < inputArray.length &&
-                "M".equals(inputArray[i + 1][j]) &&
-                "A".equals(inputArray[i + 2][j]) &&
-                "S".equals(inputArray[i + 3][j])) {
+    private static int checkSixOClock(String[][] inputArray, int count, int x, int y) {
+        if (x + 3 < inputArray.length &&
+                "M".equals(inputArray[x + 1][y]) &&
+                "A".equals(inputArray[x + 2][y]) &&
+                "S".equals(inputArray[x + 3][y])) {
             count++;
         }
         return count;
     }
 
-    private static int checkTwelveOClock(String[][] inputArray, int count, int i, int j) {
-        if (i - 3 > -1 &&
-                "M".equals(inputArray[i - 1][j]) &&
-                "A".equals(inputArray[i - 2][j]) &&
-                "S".equals(inputArray[i - 3][j])) {
+    private static int checkTwelveOClock(String[][] inputArray, int count, int x, int y) {
+        if (x - 3 > -1 &&
+                "M".equals(inputArray[x - 1][y]) &&
+                "A".equals(inputArray[x - 2][y]) &&
+                "S".equals(inputArray[x - 3][y])) {
             count++;
         }
         return count;
     }
 
-    private static int checkNineOClock(String[][] inputArray, int count, int i, int j) {
-        if (j - 3 > -1 &&
-                "M".equals(inputArray[i][j - 1]) &&
-                "A".equals(inputArray[i][j - 2]) &&
-                "S".equals(inputArray[i][j - 3])) {
+    private static int checkNineOClock(String[][] inputArray, int count, int x, int y) {
+        if (y - 3 > -1 &&
+                "M".equals(inputArray[x][y - 1]) &&
+                "A".equals(inputArray[x][y - 2]) &&
+                "S".equals(inputArray[x][y - 3])) {
             count++;
         }
         return count;
     }
 
-    private static int checkThreeOClock(String[][] inputArray, int count, int i, int j) {
-        if (j + 3 < inputArray[i].length &&
-                "M".equals(inputArray[i][j + 1]) &&
-                "A".equals(inputArray[i][j + 2]) &&
-                "S".equals(inputArray[i][j + 3])) {
+    private static int checkThreeOClock(String[][] inputArray, int count, int x, int y) {
+        if (y + 3 < inputArray[x].length &&
+                "M".equals(inputArray[x][y + 1]) &&
+                "A".equals(inputArray[x][y + 2]) &&
+                "S".equals(inputArray[x][y + 3])) {
             count++;
         }
         return count;
