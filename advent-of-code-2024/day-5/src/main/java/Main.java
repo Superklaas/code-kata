@@ -4,11 +4,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -25,22 +25,25 @@ public class Main {
                         .toList())
                 .toList();
 
-        // get map pageOrderingRules: key pageNumber, value pageNumbers that can come after pageNumber
-        Map<Integer, Set<Integer>> pageOrderingRules = new HashMap<>();
-        for (String line : Files.readAllLines(Path.of(PAGE_ORDERING_RULES))) {
-            List<Integer> pageOrderingRule = Arrays.stream(line.split("\\|"))
-                    .map(Integer::parseInt)
-                    .toList();
-            if (!pageOrderingRules.containsKey(pageOrderingRule.get(0))) {
-                pageOrderingRules.put(pageOrderingRule.get(0), new HashSet<>(Collections.singletonList(pageOrderingRule.get(1))));
-            } else {
-                pageOrderingRules.get(pageOrderingRule.get(0)).add(pageOrderingRule.get(1));
-            }
-        }
+        // get map pageOrderingRules: key pageNumber, value set of pageNumbers that can follow pageNumber
+        Map<Integer, Set<Integer>> pageOrderingRules = Files.readAllLines(Path.of(PAGE_ORDERING_RULES))
+                .stream()
+                .map(line -> Arrays.stream(line.split("\\|"))
+                        .map(Integer::parseInt)
+                        .toList())
+                .collect(Collectors.toMap(
+                        list -> list.get(0),
+                        list -> new TreeSet<>(Collections.singletonList(list.get(1))),
+                        (set1, set2) -> {
+                            set1.addAll(set2);
+                            return set1;
+                        }
+                ));
+        pageOrderingRules.entrySet().forEach(System.out::println);
 
         /* PART ONE */
 
-        // make list of updates with right order
+        // check order per update & make list of updates with right order
         List<List<Integer>> rightOrderUpdates = new ArrayList<>();
         for (List<Integer> update : updates) {
             boolean isRightOrder = checkOrderUpdates(pageOrderingRules, update);
@@ -48,9 +51,7 @@ public class Main {
         }
 
         // get middle element per update & make sum
-        int sumMiddleElements = rightOrderUpdates.stream()
-                .mapToInt(list -> list.get(list.size() / 2))
-                .sum();
+        int sumMiddleElements = calculateSumMiddleElements(rightOrderUpdates);
         System.out.println(sumMiddleElements);
 
         /* PART 2 */
@@ -59,51 +60,22 @@ public class Main {
         List<List<Integer>> wrongOrderUpdates = new ArrayList<>(updates);
         wrongOrderUpdates.removeAll(rightOrderUpdates);
 
-        // correct order & add to list correctedOrderUpdates
+        // correct order wrongOrderUpdate & add corrected version to list correctedOrderUpdates
         List<List<Integer>> correctedOrderUpdates = new ArrayList<>();
         for (List<Integer> wrongOrderUpdate : wrongOrderUpdates) {
             List<Integer> correctedOrderUpdate = correctWrongOrderUpdate(pageOrderingRules, wrongOrderUpdate);
             correctedOrderUpdates.add(correctedOrderUpdate);
         }
 
-        // get middle element per corrected update & make sum
-        sumMiddleElements = correctedOrderUpdates.stream()
-                .mapToInt(list -> list.get(list.size() / 2))
-                .sum();
+        // get middle element per corrected order update & make sum
+        sumMiddleElements = calculateSumMiddleElements(correctedOrderUpdates);
         System.out.println(sumMiddleElements);
 
     }
 
     /**
-     * Correct order elements in wrongOrderUpdate recursively, until pageOrderingRules are met for all elements.
+     * Check per element update if all following elements meet pageOrderingRules.
      */
-    private static List<Integer> correctWrongOrderUpdate(Map<Integer, Set<Integer>> pageOrderingRules, List<Integer> wrongOrderUpdate) {
-        List<Integer> correctedOrderUpdate;
-        List<Integer> updateToCorrect = new ArrayList<>(wrongOrderUpdate);
-        flipElementsAtIndexWrongElement(pageOrderingRules, updateToCorrect);
-        boolean isRightOrder = checkOrderUpdates(pageOrderingRules, updateToCorrect);
-        correctedOrderUpdate = isRightOrder ? updateToCorrect : correctWrongOrderUpdate(pageOrderingRules, updateToCorrect);
-        return correctedOrderUpdate;
-    }
-
-    private static void flipElementsAtIndexWrongElement(Map<Integer, Set<Integer>> pageOrderingRules, List<Integer> updateToCorrect) {
-        OUTER:
-        for (int i = 0; i < updateToCorrect.size(); i++) {
-            Integer pageNumber = updateToCorrect.get(i);
-            Set<Integer> rulesForPageNumber = pageOrderingRules.get(pageNumber);
-            for (int j = i + 1; j < updateToCorrect.size(); j++) {
-                // at index wrong order, flip elements at given & previous index
-                if (!rulesForPageNumber.contains(updateToCorrect.get(j))) {
-                    Integer previousElement = updateToCorrect.get(j - 1);
-                    Integer givenElement = updateToCorrect.get(j);
-                    updateToCorrect.set(j - 1, givenElement);
-                    updateToCorrect.set(j, previousElement);
-                    break OUTER;
-                }
-            }
-        }
-    }
-
     private static boolean checkOrderUpdates(Map<Integer, Set<Integer>> pageOrderingRules, List<Integer> update) {
         boolean isRightOrder = true;
         OUTER:
@@ -119,6 +91,48 @@ public class Main {
             }
         }
         return isRightOrder;
+    }
+
+    /**
+     * Correct order elements in wrongOrderUpdate recursively, until pageOrderingRules are met for all elements.
+     */
+    private static List<Integer> correctWrongOrderUpdate(Map<Integer, Set<Integer>> pageOrderingRules, List<Integer> wrongOrderUpdate) {
+        List<Integer> updateToCorrect = new ArrayList<>(wrongOrderUpdate);
+        List<Integer> correctedUpdate = flipElementsAtIndexWrongElement(pageOrderingRules, updateToCorrect);
+        boolean isRightOrder = checkOrderUpdates(pageOrderingRules, correctedUpdate);
+        return isRightOrder
+                ? correctedUpdate
+                : correctWrongOrderUpdate(pageOrderingRules, correctedUpdate);
+    }
+
+    /**
+     * When pageOrderingRule not found for given index, flip elements at given & previous index.
+     */
+    private static List<Integer> flipElementsAtIndexWrongElement(Map<Integer, Set<Integer>> pageOrderingRules, List<Integer> updateToCorrect) {
+        OUTER:
+        for (int i = 0; i < updateToCorrect.size(); i++) {
+            Integer pageNumber = updateToCorrect.get(i);
+            Set<Integer> rulesForPageNumber = pageOrderingRules.get(pageNumber);
+            for (int j = i + 1; j < updateToCorrect.size(); j++) {
+                if (!rulesForPageNumber.contains(updateToCorrect.get(j))) {
+                    Integer previousElement = updateToCorrect.get(j - 1);
+                    Integer givenElement = updateToCorrect.get(j);
+                    updateToCorrect.set(j - 1, givenElement);
+                    updateToCorrect.set(j, previousElement);
+                    break OUTER;
+                }
+            }
+        }
+        return updateToCorrect;
+    }
+
+    /**
+     * Get middle element per update & make sum of all middle elements.
+     */
+    private static int calculateSumMiddleElements(List<List<Integer>> updates) {
+        return updates.stream()
+                .mapToInt(list -> list.get(list.size() / 2))
+                .sum();
     }
 
 }
