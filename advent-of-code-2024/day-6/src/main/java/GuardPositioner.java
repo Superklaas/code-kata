@@ -4,26 +4,63 @@ import java.nio.file.Path;
 
 public class GuardPositioner {
 
-//    public static final String INPUT = "advent-of-code-2024/day-6/input/test-input-2.txt";
-    public static final String INPUT = "advent-of-code-2024/day-6/input/input.txt";
+    static final String INPUT = "advent-of-code-2024/day-6/input/input.txt";
 
-    public static final String DOT = ".";
-    public static final String HASHTAG = "#";
-    public static final String X = "X";
+    static final String DOT = ".";
+    static final String HASHTAG = "#";
+    static final String X = "X";
 
-    private static int pointerX;
-    private static int pointerY;
-    private static Direction direction = Direction.UP;
+    static String[][] grid;
+    static int numberCellsInGrid;
+    static int pointerX, pointerY;
+    static Direction direction;
 
-    private static int counter = 0;
+    static int checkPointCounter, guardStuckCounter;
 
     public static void main(String[] args) throws IOException {
 
-        String[][] grid = Files.readAllLines(Path.of(INPUT))
+        initializeGrid();
+
+        // PART 1
+
+        while (!isAtBorder()) move();
+        System.out.println(checkPointCounter);
+
+        // PART 2
+
+        initializeGrid();
+
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                if (DOT.equals(grid[y][x])) {
+                    grid[y][x] = HASHTAG;
+                    boolean isGuardStuck = checkIfGuardGetsStuck();
+                    if (isGuardStuck) guardStuckCounter++;
+                }
+                initializeGrid();
+            }
+        }
+
+        System.out.println(guardStuckCounter);
+
+    }
+
+    private static void initializeGrid() throws IOException {
+        grid = getOriginalGrid();
+        numberCellsInGrid = grid.length * grid[0].length;
+        getInitialCoordinates(grid);
+        checkPointCounter = 1;
+        direction = Direction.UP;
+    }
+
+    private static String[][] getOriginalGrid() throws IOException {
+        return Files.readAllLines(Path.of(INPUT))
                 .stream()
                 .map(line -> line.split(""))
                 .toArray(String[][]::new);
+    }
 
+    private static void getInitialCoordinates(String[][] grid) {
         OUTER:
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid[y].length; x++) {
@@ -31,23 +68,31 @@ public class GuardPositioner {
                     pointerX = x;
                     pointerY = y;
                     grid[y][x] = X;
-                    counter++;
                     break OUTER;
                 }
             }
         }
+    }
 
-        while (!(0 == pointerX || grid[0].length - 1 == pointerX || 0 == pointerY || grid.length - 1 == pointerY)) {
-            switch (direction) {
-                case UP -> moveUp(grid);
-                case RIGHT -> moveRight(grid);
-                case DOWN -> moveDown(grid);
-                case LEFT -> moveLeft(grid);
-            }
+    private static boolean isAtBorder() {
+        return 0 == pointerX || grid[0].length - 1 == pointerX || 0 == pointerY || grid.length - 1 == pointerY;
+    }
+
+    private static boolean checkIfGuardGetsStuck() {
+        for (int i = 0; i < numberCellsInGrid; i++) {
+            move();
+            if (isAtBorder()) return false;
         }
-        printGrid(grid);
-        System.out.println(counter);
+        return true;
+    }
 
+    private static void move() {
+        switch (direction) {
+            case UP -> moveUp(grid);
+            case RIGHT -> moveRight(grid);
+            case DOWN -> moveDown(grid);
+            case LEFT -> moveLeft(grid);
+        }
     }
 
     private static void moveLeft(String[][] grid) {
@@ -55,7 +100,7 @@ public class GuardPositioner {
         switch (nextPosition) {
             case DOT -> {
                 grid[pointerY][pointerX - 1] = X;
-                counter++;
+                checkPointCounter++;
                 pointerX = pointerX - 1;
             }
             case X -> pointerX = pointerX - 1;
@@ -68,7 +113,7 @@ public class GuardPositioner {
         switch (nextPosition) {
             case DOT -> {
                 grid[pointerY + 1][pointerX] = X;
-                counter++;
+                checkPointCounter++;
                 pointerY = pointerY + 1;
             }
             case X -> pointerY = pointerY + 1;
@@ -81,7 +126,7 @@ public class GuardPositioner {
         switch (nextPosition) {
             case DOT -> {
                 grid[pointerY][pointerX + 1] = X;
-                counter++;
+                checkPointCounter++;
                 pointerX = pointerX + 1;
             }
             case X -> pointerX = pointerX + 1;
@@ -94,7 +139,7 @@ public class GuardPositioner {
         switch (nextPosition) {
             case DOT -> {
                 grid[pointerY - 1][pointerX] = X;
-                counter++;
+                checkPointCounter++;
                 pointerY = pointerY - 1;
             }
             case X -> pointerY = pointerY - 1;
@@ -103,11 +148,8 @@ public class GuardPositioner {
     }
 
     private static void printGrid(String[][] grid) {
-        for (int y = 0; y < grid.length; y++) {
-            for (int x = 0; x < grid[y].length; x++) {
-                System.out.print(grid[y][x]);
-            }
-            System.out.println();
+        for (String[] row : grid) {
+            System.out.println(String.join("", row));
         }
     }
 
