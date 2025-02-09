@@ -4,6 +4,7 @@ public class Guard {
     private int pointerX, pointerY, originalPointerX, originalPointerY;
     private Direction direction;
     private static int checkPointCounter;
+    private static int guardStuckCounter;
 
     public Guard(Grid grid) {
         this.grid = grid;
@@ -69,6 +70,14 @@ public class Guard {
 
     public int getCheckPointCounter() {
         return checkPointCounter;
+    }
+
+    public int getGuardStuckCounter() {
+        return guardStuckCounter;
+    }
+
+    public void setGuardStuckCounter(int guardStuckCounter) {
+        Guard.guardStuckCounter = guardStuckCounter;
     }
 
 }

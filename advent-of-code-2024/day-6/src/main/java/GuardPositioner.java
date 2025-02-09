@@ -7,12 +7,10 @@ public class GuardPositioner {
     private final Grid grid;
     private final Guard guard;
 
-    private static int guardStuckCounter;
-
     public static void main(String[] args) throws IOException {
         GuardPositioner guardPositioner = new GuardPositioner();
-        guardPositioner.moveToBorder();
-        guardPositioner.addObstruction();
+        guardPositioner.moveToBorder(); // part 1
+        guardPositioner.addObstruction(); // part 2
     }
 
     public GuardPositioner() throws IOException {
@@ -35,13 +33,13 @@ public class GuardPositioner {
                 if (Grid.DOT.equals(grid.getCurrentGrid()[y][x])) {
                     grid.getCurrentGrid()[y][x] = Grid.HASHTAG;
                     boolean isGuardStuck = guard.checkIfGuardGetsStuck();
-                    if (isGuardStuck) guardStuckCounter++;
+                    if (isGuardStuck) guard.setGuardStuckCounter(guard.getGuardStuckCounter() + 1);
                 }
                 grid.resetGrid();
                 guard.resetGuard();
             }
         }
-        System.out.println(guardStuckCounter);
+        System.out.println(guard.getGuardStuckCounter());
     }
 
 }
