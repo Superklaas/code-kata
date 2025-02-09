@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class Main {
+public class Day5 {
 
     public static final String PAGE_ORDERING_RULES = "advent-of-code-2024/day-5/input/page-ordering-rules.txt";
     public static final String UPDATES = "advent-of-code-2024/day-5/input/updates.txt";
@@ -131,7 +131,8 @@ public class Main {
      */
     private static int calculateSumMiddleElements(List<List<Integer>> updates) {
         return updates.stream()
-                .mapToInt(list -> list.get(list.size() / 2))
+                .map(list -> list.get(list.size() / 2))
+                .mapToInt(Integer::intValue)
                 .sum();
     }
 
