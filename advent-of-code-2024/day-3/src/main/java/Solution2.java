@@ -3,6 +3,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,7 +16,8 @@ public class Solution2 {
         String input = Files.readString(Path.of(INPUT));
 
         /* PART ONE */
-        ArrayList<String> mulExpressions = getMulExpressions(input);
+
+        List<String> mulExpressions = getMulExpressions(input);
         long sumPart1 = getSumOfProducts(mulExpressions);
         System.out.println(sumPart1);
 
@@ -27,19 +29,18 @@ public class Solution2 {
 
         // get products from part before first disabling
         String firstPart = splitsByDont[0];
-        ArrayList<String> mulExpressions1 = getMulExpressions(firstPart);
+        List<String> mulExpressions1 = getMulExpressions(firstPart);
         long sumFirstSplit = getSumOfProducts(mulExpressions1);
         sumPart2 += sumFirstSplit;
 
         // get sum from enabled parts
         for (int i = 1; i < splitsByDont.length; i++) {
-            String[] splitsByDo = splitsByDont[i].split("do",2);
+            String[] splitsByDo = splitsByDont[i].split("do", 2); // split into disabled part (before do) and enabled part (after do)
             if (splitsByDo.length > 1) {
-                for (int j = 1; j < splitsByDo.length; j++) {
-                    ArrayList<String> mulExpressions2 = getMulExpressions(splitsByDo[j]);
-                    long sumEnabledSplit = getSumOfProducts(mulExpressions2);
-                    sumPart2 += sumEnabledSplit;
-                }
+                String enabledSplit = splitsByDo[1];
+                List<String> mulExpressions2 = getMulExpressions(enabledSplit);
+                long sumEnabledSplit = getSumOfProducts(mulExpressions2);
+                sumPart2 += sumEnabledSplit;
             }
         }
 
@@ -47,7 +48,7 @@ public class Solution2 {
 
     }
 
-    private static long getSumOfProducts(ArrayList<String> mulExpressions) {
+    private static long getSumOfProducts(List<String> mulExpressions) {
         long sum = 0;
         for (String mulExpression : mulExpressions) {
             String[] factors = mulExpression.substring(4, mulExpression.indexOf(")")).split(",");
@@ -60,11 +61,11 @@ public class Solution2 {
         return sum;
     }
 
-    private static ArrayList<String> getMulExpressions(String input) {
+    private static List<String> getMulExpressions(String input) {
         String patternString = "mul\\([0-9]+,[0-9]+\\)";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(input);
-        ArrayList<String> mulExpressions = new ArrayList<>();
+        List<String> mulExpressions = new ArrayList<>();
         while (matcher.find()) {
             mulExpressions.add(matcher.group());
         }

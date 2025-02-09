@@ -22,11 +22,9 @@ public class Solution1 {
         int sum = Arrays.stream(mulExpressions)
                 .filter(s -> s.matches(regex))
                 .map(s -> s.substring(1, s.indexOf(")")).split(","))
-                .map(factors -> Arrays.stream(factors)
-                        .map(Integer::parseInt)
-                        .reduce((a, b) -> a * b)
-                        .orElse(0))
-                .mapToInt(i -> i)
+                .map(array -> Arrays.stream(array).map(Integer::valueOf).toList())
+                .map(factors -> factors.stream().reduce((a, b) -> a * b).orElse(0))
+                .mapToInt(Integer::intValue)
                 .sum();
         System.out.println(sum);
 
