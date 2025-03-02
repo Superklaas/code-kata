@@ -16,8 +16,6 @@
         <module>bowling</module>
         <module>alphabet-cipher-2</module>
         <module>advent-of-code-2024</module>
-        <module>advent-of-code-2024/day-6</module>
-        <module>advent-of-code-2024/day-7</module>
         <module>leet-code</module>
     </modules>
 
